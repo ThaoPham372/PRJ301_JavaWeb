@@ -10,26 +10,27 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Employee CRUD</title>
     </head>
     <body>
-        
-        <h1>Employee List</h1>
-        <table border ="1">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Address</th>
-            </tr>
-            <c:forEach var="employee" items="${employees}"> 
-                <tr>
-                    <td>${employee.id}</td>
-                    <td>${employee.name}</td>
-                    <td>${employee.email}</td>
-                    <td>${employee.address}</td>
-                </tr>
-            </c:forEach>
-        </table>
+       <h2>Employee List</h2>
+    <a href="employees?action=create">Add New Employee</a>
+    <table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <th>ID</th><th>Name</th><th>Email</th><th>Address</th><th>Actions</th>
+    </tr>
+    <c:forEach var="emp" items="${employees}">
+        <tr>
+            <td>${emp.id}</td>
+            <td>${emp.name}</td>
+            <td>${emp.email}</td>
+            <td>${emp.address}</td>
+            <td>
+                <a href="employees?action=edit&id=${emp.id}">Edit</a>
+                <a href="employees?action=delete&id=${emp.id}">Delete</a>
+            </td>
+        </tr>
+    </c:forEach>
+</table>
     </body>
 </html>

@@ -12,6 +12,13 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h2>Create New Employee</h2>
+    <form action="employees?action=create" method="post">
+    ID: <input type="text" name="id"/><br/>
+    Name: <input type="text" name="name"/><br/>
+    Email: <input type="text" name="email"/><br/>
+    Address: <input type="text" name="address"/><br/>
+    <input type="submit" value="Save"/>
+    </form>
     </body>
 </html>
