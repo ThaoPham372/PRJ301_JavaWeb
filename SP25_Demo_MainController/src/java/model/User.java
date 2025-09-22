@@ -11,7 +11,7 @@ public class User {
     private String dob; // String cho đơn giản
 
     public User(int id, String username, String email, String country,
-                String role, boolean status, String password, String dob) {
+            String role, boolean status, String password, String dob) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -85,22 +85,18 @@ public class User {
     public void setDob(String dob) {
         this.dob = dob;
     }
-    
-    
-
-  
 
     @Override
     public String toString() {
         return "User{" +
-               "id=" + id +
-               ", username='" + username + '\'' +
-               ", email='" + email + '\'' +
-               ", country='" + country + '\'' +
-               ", role='" + role + '\'' +
-               ", status=" + status +
-               ", password='" + password + '\'' +
-               ", dob='" + dob + '\'' +
-               '}';
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", country='" + country + '\'' +
+                ", role='" + role + '\'' +
+                ", status=" + status +
+                ", password='" + password + '\'' +
+                ", dob='" + dob + '\'' +
+                '}';
     }
 }
