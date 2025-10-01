@@ -11,13 +11,13 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Xóa session
+        
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
 
-        // Quay về login.jsp
+        
         response.sendRedirect(request.getContextPath() + "/login");
     }
 }

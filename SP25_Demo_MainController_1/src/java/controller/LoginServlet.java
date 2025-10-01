@@ -25,7 +25,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy cookie để fill lại vào form
+        
         String rememberedUser = "";
         String rememberedPass = "";
         Cookie[] cookies = request.getCookies();
@@ -59,20 +59,20 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             session.setAttribute("user", user);
 
             if ("on".equals(remember)) {
-                // ✅ Lưu cookie mới
+                
                 Cookie userCookie = new Cookie("REMEMBER_USER", username);
                 Cookie passCookie = new Cookie("REMEMBER_PASS", password);
-                userCookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
+                userCookie.setMaxAge(7 * 24 * 60 * 60); 
                 passCookie.setMaxAge(7 * 24 * 60 * 60);
                 userCookie.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());
                 passCookie.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());
                 response.addCookie(userCookie);
                 response.addCookie(passCookie);
             } else {
-                // ❌ Nếu không tick, xóa cookie cũ
+                
                 Cookie userCookie = new Cookie("REMEMBER_USER", "");
                 Cookie passCookie = new Cookie("REMEMBER_PASS", "");
-                userCookie.setMaxAge(0); // xóa ngay
+                userCookie.setMaxAge(0); 
                 passCookie.setMaxAge(0);
                 userCookie.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());
                 passCookie.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());

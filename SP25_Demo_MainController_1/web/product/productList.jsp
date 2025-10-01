@@ -36,11 +36,11 @@
     </div>
 </div>
 
-<!-- Nút thêm mới -->
+
 <a href="${pageContext.request.contextPath}/products?action=new" class="add">➕ Add New Product</a>
 <br/><br/>
 
-<!-- Bảng sản phẩm -->
+
 <c:choose>
     <c:when test="${empty listProduct}">
         <p class="muted">Không có sản phẩm nào để hiển thị.</p>
@@ -81,7 +81,6 @@
     </c:otherwise>
 </c:choose>
 
-<!-- Phân trang -->
 <c:if test="${not empty totalPages}">
     <div class="pagination">
         <c:forEach begin="1" end="${totalPages}" var="i">
