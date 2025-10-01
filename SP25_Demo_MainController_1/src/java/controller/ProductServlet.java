@@ -34,6 +34,12 @@ public class ProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        
+        if (session == null || session.getAttribute("user") == null) {
+        response.sendRedirect("login");
+        return;
+    }
         String action = request.getParameter("action");
         if (action == null) action = "list";
 
@@ -127,7 +133,7 @@ public class ProductServlet extends HttpServlet {
     private void deleteProduct(HttpServletRequest request, HttpServletResponse response)
         throws SQLException, IOException {
     int id = Integer.parseInt(request.getParameter("id"));
-    productService.deleteProduct(id); // gọi xuống service/dao update status = 0
+    productService.deleteProduct(id); 
     response.sendRedirect("products?action=list");
 }
 }

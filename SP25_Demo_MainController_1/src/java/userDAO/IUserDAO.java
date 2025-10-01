@@ -16,4 +16,11 @@ public interface IUserDAO {
     boolean updateUser(User user) throws SQLException;
 
     List<User> searchUsers(String keyword) throws SQLException;
+    
+    User login(String username, String password) throws SQLException;
+    
+    void updateRememberToken(int userId, String token, java.sql.Timestamp expiry) throws java.sql.SQLException;
+    model.User findByRememberToken(String token) throws java.sql.SQLException;
+
+
 }

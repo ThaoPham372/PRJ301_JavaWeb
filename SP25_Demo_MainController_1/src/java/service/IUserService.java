@@ -11,4 +11,8 @@ public interface IUserService {
     boolean updateUser(User user) throws SQLException;
     boolean deleteUser(int id) throws SQLException;
     List<User> searchUsers(String keyword) throws SQLException;
+    User login(String username, String password) throws SQLException;
+    void updateRememberToken(int userId, String token, java.sql.Timestamp expiry) throws java.sql.SQLException;
+    User findByRememberToken(String token) throws java.sql.SQLException;
+
 }

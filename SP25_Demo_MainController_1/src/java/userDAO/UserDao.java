@@ -12,8 +12,8 @@ public class UserDao implements IUserDAO {
     private static final String LOGIN =
             "SELECT id, username, role, password FROM Users WHERE username = ? AND password = ?";
 
-    private static final String LOGIN1 =
-            "SELECT id, username, role, password FROM Users WHERE username = ? AND password = ?";
+    private static final String LOGIN_SQL =
+    "SELECT * FROM Users WHERE username = ? AND password = ? AND status = 1";
 
     private static final String SELECT_USER_BY_ID =
             "SELECT * FROM Users WHERE id = ?";
@@ -35,6 +35,12 @@ public class UserDao implements IUserDAO {
     "FROM Users " +
     "WHERE username LIKE ? OR email LIKE ? OR country LIKE ? OR role LIKE ? OR " +
     " (CASE WHEN status=1 THEN 'Active' ELSE 'Inactive' END) LIKE ?";
+    
+    private static final String UPDATE_REMEMBER_TOKEN =
+    "UPDATE Users SET remember_token = ?, remember_expiry = ? WHERE id = ?";
+
+    private static final String SELECT_BY_REMEMBER_TOKEN =
+    "SELECT * FROM Users WHERE remember_token = ? AND status = 1";
 
     @Override
     public void insertUser(User user) throws SQLException {
@@ -174,5 +180,64 @@ public List<User> searchUsers(String keyword) throws SQLException {
         }
     }
     return users;
+}
+
+    @Override
+    public User login(String username, String password) throws SQLException {
+    User user = null;
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(LOGIN_SQL)) {
+        ps.setString(1, username);
+        ps.setString(2, password);
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            user = new User(
+                rs.getInt("id"),
+                rs.getString("username"),
+                rs.getString("email"),
+                rs.getString("country"),
+                rs.getString("role"),
+                rs.getBoolean("status"),
+                rs.getString("password"),
+                rs.getString("dob")
+            );
+        }
+    }
+    return user;
+}
+
+    @Override
+    public void updateRememberToken(int userId, String token, Timestamp expiry) throws SQLException {
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(UPDATE_REMEMBER_TOKEN)) {
+        ps.setString(1, token);
+        ps.setTimestamp(2, expiry);
+        ps.setInt(3, userId);
+        ps.executeUpdate();
+    }
+}
+
+    @Override
+    public User findByRememberToken(String token) throws SQLException {
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(SELECT_BY_REMEMBER_TOKEN)) {
+        ps.setString(1, token);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("email"),
+                    rs.getString("country"),
+                    rs.getString("role"),
+                    rs.getBoolean("status"),
+                    rs.getString("password"),
+                    rs.getString("dob")
+                );
+            }
+        }
+    }
+    return null;
 }
 }
