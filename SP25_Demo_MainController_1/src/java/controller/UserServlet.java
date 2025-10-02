@@ -43,8 +43,11 @@ public class UserServlet extends HttpServlet {
                     insertUser(request, response);
                     break;
                 case "delete":
-                    deleteUser(request, response);
+                    showDeleteForm(request, response);
                     break;
+                case "deleteConfirm":
+                    deleteUser(request, response);
+                    break;    
                 case "edit":
                     showEditForm(request, response);
                     break;
@@ -115,6 +118,13 @@ public class UserServlet extends HttpServlet {
         User user = new User(id, username, email, country, role, status, password, dob);
         userService.updateUser(user);
         response.sendRedirect("users?action=list");
+    }
+    private void showDeleteForm(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    int id = Integer.parseInt(request.getParameter("id"));
+    request.setAttribute("id", id);
+    RequestDispatcher dispatcher = request.getRequestDispatcher("user/deleteUser.jsp");
+    dispatcher.forward(request, response);
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response)

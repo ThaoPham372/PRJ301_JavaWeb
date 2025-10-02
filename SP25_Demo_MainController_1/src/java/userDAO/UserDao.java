@@ -19,7 +19,7 @@ public class UserDao implements IUserDAO {
             "SELECT * FROM Users WHERE id = ?";
     
     private static final String SELECT_ALL_USERS =
-            "SELECT * FROM Users";
+            "SELECT * FROM Users WHERE status = 1";
     
     private static final String UPDATE_USER =
             "UPDATE Users SET username = ?, email = ?, country = ?, role = ?, status = ?, password = ?, dob = ? WHERE id = ?";
@@ -113,14 +113,15 @@ public class UserDao implements IUserDAO {
 
     @Override
     public boolean deleteUser(int id) throws SQLException {
-        boolean rowUpdated;
-        try (Connection conn = DBConnection.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(UPDATE_STATUS);
-            ps.setInt(1, id);
-            rowUpdated = ps.executeUpdate() > 0;
-        }
-        return rowUpdated;
+    boolean rowUpdated;
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(UPDATE_STATUS)) {
+        ps.setInt(1, id);
+        rowUpdated = ps.executeUpdate() > 0;
     }
+    return rowUpdated;
+}
+
 
     @Override
     public boolean updateUser(User user) throws SQLException {

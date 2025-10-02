@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Delete Product</title>
+    <title>Delete User</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,14 +55,14 @@
 </head>
 <body>
 <div class="container">
-    <h2>Confirm Delete Product</h2>
+    <h2>Confirm Delete User</h2>
 
-    <p>Are you sure you want to delete this product?</p>
+    <p>Are you sure you want to delete this user?</p>
 
-    <form action="products?action=deleteConfirm" method="post">
+    <form action="${pageContext.request.contextPath}/users?action=deleteConfirm" method="post">
         <input type="hidden" name="id" value="${param.id}"/>
         <input type="submit" value="🗑 Yes, Delete" class="btn btn-delete"/>
-        <a href="products?action=list" class="btn btn-cancel">❌ Cancel</a>
+        <a href="${pageContext.request.contextPath}/users?action=list" class="btn btn-cancel">❌ Cancel</a>
     </form>
 </div>
 </body>

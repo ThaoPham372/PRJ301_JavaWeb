@@ -59,7 +59,6 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             session.setAttribute("user", user);
 
             if ("on".equals(remember)) {
-                
                 Cookie userCookie = new Cookie("REMEMBER_USER", username);
                 Cookie passCookie = new Cookie("REMEMBER_PASS", password);
                 userCookie.setMaxAge(7 * 24 * 60 * 60); 
@@ -69,10 +68,9 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
                 response.addCookie(userCookie);
                 response.addCookie(passCookie);
             } else {
-                
                 Cookie userCookie = new Cookie("REMEMBER_USER", "");
                 Cookie passCookie = new Cookie("REMEMBER_PASS", "");
-                userCookie.setMaxAge(0); 
+                userCookie.setMaxAge(0);
                 passCookie.setMaxAge(0);
                 userCookie.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());
                 passCookie.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());
@@ -80,7 +78,12 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
                 response.addCookie(passCookie);
             }
 
-            response.sendRedirect(request.getContextPath() + "/products?action=list");
+            if ("admin".equalsIgnoreCase(user.getRole())) {
+                response.sendRedirect(request.getContextPath() + "/users?action=list");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/products?action=list");
+            }
+
         } else {
             request.setAttribute("error", "Invalid username or password!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -89,5 +92,4 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throw new ServletException(e);
     }
 }
-
 }
