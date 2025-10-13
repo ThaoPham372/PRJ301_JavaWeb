@@ -42,20 +42,18 @@ public class CheckoutServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/carts");
             return;
         }
+        
+        int userId = 1; 
+        double totalPrice = cart.getFinalTotal(); 
 
-        // Lấy user_id từ session (giả sử đã login)
-        int userId = 1; // Thay bằng user.getId() khi có login
-        double totalPrice = cart.getFinalTotal(); // Lấy tổng tiền sau khi áp dụng giảm giá
-
-        // Tạo đơn hàng mới
+        
         Order order = new Order(0, userId, totalPrice, "Pending");
 
         try {
-            // Lưu order và lấy order ID
+            
             int orderId = orderService.createOrder(order);
 
             if (orderId > 0) {
-                // Lưu chi tiết đơn hàng
                 for (Map.Entry<Integer, CartItem> entry : cart.getItems().entrySet()) {
                     Product product = entry.getValue().getProduct();
                     CartItem item = entry.getValue();
@@ -67,10 +65,9 @@ public class CheckoutServlet extends HttpServlet {
                             product.getPrice().doubleValue());
                 }
 
-                // Xóa giỏ hàng
+                
                 session.removeAttribute("cart");
 
-                // Chuyển đến trang thành công
                 response.sendRedirect(request.getContextPath() + "/cart/success.jsp");
             } else {
                 throw new ServletException("Không thể tạo đơn hàng");

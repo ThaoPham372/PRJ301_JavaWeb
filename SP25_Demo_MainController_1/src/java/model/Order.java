@@ -61,7 +61,7 @@ public class Order {
                 '}';
     }
 
-    // Phương thức để ánh xạ kết quả từ ResultSet thành đối tượng Order
+    
     public static Order fromResultSet(ResultSet rs) throws SQLException {
         Order order = new Order();
         order.setId(rs.getInt("id"));

@@ -80,7 +80,7 @@ public class Cart {
 
   public double getDiscountAmount() {
     if (discountApplied) {
-      return getTotalCost() * 0.10; // 10% giảm giá
+      return getTotalCost() * 0.10;
     }
     return 0.0;
   }

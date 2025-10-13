@@ -8,7 +8,7 @@ public class User {
     private String role;
     private boolean status;
     private String password;
-    private String dob; // String cho đơn giản
+    private String dob; 
 
     public User(int id, String username, String email, String country,
             String role, boolean status, String password, String dob) {
