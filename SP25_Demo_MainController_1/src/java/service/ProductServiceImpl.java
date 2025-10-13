@@ -1,11 +1,11 @@
 package service;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import model.Product;
 import productDao.IProductDao;
 import productDao.ProductDao;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public class ProductServiceImpl implements IProductService {
 
@@ -22,6 +22,11 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public Product selectProduct(int id) throws SQLException {
+        return productDao.selectProduct(id);
+    }
+
+    @Override
+    public Product getProductById(int id) throws SQLException {
         return productDao.selectProduct(id);
     }
 

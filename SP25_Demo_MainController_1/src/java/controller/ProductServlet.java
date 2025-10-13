@@ -1,19 +1,18 @@
 package controller;
 
-import model.Product;
-import service.IProductService;
-import service.ProductServiceImpl;
-
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import model.Product;
+import service.IProductService;
+import service.ProductServiceImpl;
 
 @WebServlet("/products")
 public class ProductServlet extends HttpServlet {
@@ -34,14 +33,18 @@ public class ProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        
-        if (session == null || session.getAttribute("user") == null) {
-        response.sendRedirect("login");
-        return;
-    }
         String action = request.getParameter("action");
-        if (action == null) action = "list";
+        if (action == null)
+            action = "list";
+
+        // Chỉ check login cho các action quản lý sản phẩm (thêm, sửa, xóa)
+        if (!action.equals("list")) {
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("user") == null) {
+                response.sendRedirect("login");
+                return;
+            }
+        }
 
         try {
             switch (action) {
@@ -121,19 +124,19 @@ public class ProductServlet extends HttpServlet {
         productService.updateProduct(product);
         response.sendRedirect("products?action=list");
     }
-    
+
     private void showDeleteForm(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    int id = Integer.parseInt(request.getParameter("id"));
-    request.setAttribute("id", id);
-    RequestDispatcher dispatcher = request.getRequestDispatcher("product/deleteProduct.jsp");
-    dispatcher.forward(request, response);
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        request.setAttribute("id", id);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("product/deleteProduct.jsp");
+        dispatcher.forward(request, response);
     }
 
     private void deleteProduct(HttpServletRequest request, HttpServletResponse response)
-        throws SQLException, IOException {
-    int id = Integer.parseInt(request.getParameter("id"));
-    productService.deleteProduct(id); 
-    response.sendRedirect("products?action=list");
-}
+            throws SQLException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        productService.deleteProduct(id);
+        response.sendRedirect("products?action=list");
+    }
 }
