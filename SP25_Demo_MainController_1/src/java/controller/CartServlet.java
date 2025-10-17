@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -38,8 +40,23 @@ public class CartServlet extends HttpServlet {
             session.setAttribute("cart", cart);
         }
         request.setAttribute("cart", cart);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("cart/cart2.jsp");
-        dispatcher.forward(request, response);
+
+        // If query param view=1, show cart details page; otherwise show product list
+        String view = request.getParameter("view");
+        if ("1".equals(view)) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("cart/cart2.jsp");
+            dispatcher.forward(request, response);
+            return;
+        }
+
+        try {
+            List<Product> products = productService.selectAllProducts();
+            request.setAttribute("productList", products);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("productListCart.jsp");
+            dispatcher.forward(request, response);
+        } catch (SQLException e) {
+            throw new ServletException("Error loading products", e);
+        }
     }
 
     @Override
@@ -52,6 +69,7 @@ public class CartServlet extends HttpServlet {
         }
 
         String action = request.getParameter("action");
+        String source = request.getParameter("source"); // 'cart' if invoked from cart page
         try {
             int productId = Integer.parseInt(request.getParameter("productId"));
 
@@ -63,9 +81,7 @@ public class CartServlet extends HttpServlet {
                         if (product != null) {
                             cartService.addToCart(cart, product, quantity);
                             session.setAttribute("cart", cart);
-
-                            response.sendRedirect(request.getContextPath() + "/carts");
-                            return;
+                            request.setAttribute("message", "Thêm sản phẩm thành công!");
                         }
                     } catch (Exception ex) {
                         request.setAttribute("error", "Không thể thêm sản phẩm vào giỏ hàng");
@@ -76,21 +92,42 @@ public class CartServlet extends HttpServlet {
                     int updateQuantity = Integer.parseInt(request.getParameter("quantity"));
                     if (updateQuantity > 0) {
                         cartService.updateCartItem(cart, productId, updateQuantity);
+                        request.setAttribute("message", "Cập nhật số lượng thành công!");
                     }
                     break;
 
                 case "remove":
                     cartService.removeCartItem(cart, productId);
+                    request.setAttribute("message", "Đã xóa sản phẩm khỏi giỏ hàng!");
                     break;
+
+                case "view":
+                    // Hiển thị trang giỏ hàng chi tiết
+                    request.setAttribute("cart", cart);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("cart/cart2.jsp");
+                    dispatcher.forward(request, response);
+                    return;
             }
 
             session.setAttribute("cart", cart);
-            response.sendRedirect(request.getContextPath() + "/carts");
+
+            // If source is cart, stay on cart page; otherwise go back to product list
+            if ("cart".equals(source)) {
+                request.setAttribute("cart", cart);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("cart/cart2.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                List<Product> products = productService.selectAllProducts();
+                request.setAttribute("productList", products);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("productListCart.jsp");
+                dispatcher.forward(request, response);
+            }
 
         } catch (NumberFormatException e) {
             request.setAttribute("error", "Invalid input data");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("cart/cart2.jsp");
-            dispatcher.forward(request, response);
+            doGet(request, response);
+        } catch (SQLException e) {
+            throw new ServletException("Error processing request", e);
         }
     }
 }

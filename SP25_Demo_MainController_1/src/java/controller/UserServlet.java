@@ -1,16 +1,16 @@
 package controller;
 
-import model.User;
-import service.IUserService;
-import service.UserServiceImpl;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
+import model.User;
+import service.IUserService;
+import service.UserServiceImpl;
 
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
@@ -32,7 +32,8 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action == null) action = "list";
+        if (action == null)
+            action = "list";
 
         try {
             switch (action) {
@@ -47,7 +48,7 @@ public class UserServlet extends HttpServlet {
                     break;
                 case "deleteConfirm":
                     deleteUser(request, response);
-                    break;    
+                    break;
                 case "edit":
                     showEditForm(request, response);
                     break;
@@ -119,12 +120,13 @@ public class UserServlet extends HttpServlet {
         userService.updateUser(user);
         response.sendRedirect("users?action=list");
     }
+
     private void showDeleteForm(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    int id = Integer.parseInt(request.getParameter("id"));
-    request.setAttribute("id", id);
-    RequestDispatcher dispatcher = request.getRequestDispatcher("user/deleteUser.jsp");
-    dispatcher.forward(request, response);
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        request.setAttribute("id", id);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user/deleteUser.jsp");
+        dispatcher.forward(request, response);
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response)

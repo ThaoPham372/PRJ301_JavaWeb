@@ -11,11 +11,45 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         font-family: Arial, sans-serif;
         margin: 20px;
         padding: 0;
+        background-color: #f5f5f5;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .welcome-message {
+        font-size: 1.2em;
+        color: #333;
+      }
+      .logout-btn {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 15px;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .logout-btn:hover {
+        background-color: #c82333;
       }
       table {
         width: 100%;
         border-collapse: collapse;
         margin: 20px 0;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
       th,
       td {
@@ -24,13 +58,15 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         text-align: center;
       }
       th {
-        background-color: #f5f5f5;
+        background-color: #f8f9fa;
         font-weight: bold;
       }
       .quantity-input {
         width: 60px;
         padding: 5px;
         text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 4px;
       }
       .btn {
         padding: 6px 12px;
@@ -38,14 +74,21 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
         border-radius: 4px;
         cursor: pointer;
         margin: 0 5px;
+        transition: background-color 0.3s;
       }
       .update-btn {
         background-color: #28a745;
         color: white;
       }
+      .update-btn:hover {
+        background-color: #218838;
+      }
       .remove-btn {
         background-color: #dc3545;
         color: white;
+      }
+      .remove-btn:hover {
+        background-color: #c82333;
       }
       .button-container {
         text-align: center;
@@ -53,37 +96,64 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
       }
       .action-button {
         display: inline-block;
-        padding: 8px 20px;
+        padding: 10px 20px;
         margin: 0 10px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
         font-size: 14px;
         text-decoration: none;
+        transition: background-color 0.3s;
       }
       .continue-btn {
         background-color: #6c757d;
         color: white;
       }
+      .continue-btn:hover {
+        background-color: #5a6268;
+      }
       .checkout-btn {
         background-color: #28a745;
         color: white;
       }
+      .checkout-btn:hover {
+        background-color: #218838;
+      }
+      .empty-cart {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
     </style>
   </head>
   <body>
+    <div class="header">
+      <div class="user-info">
+        <span class="welcome-message"
+          >Welcome, ${sessionScope.user.username}!</span
+        >
+      </div>
+      <a href="${pageContext.request.contextPath}/logout" class="logout-btn"
+        >Logout</a
+      >
+    </div>
+
     <h2>Shopping Cart</h2>
 
     <c:choose>
       <c:when test="${empty cart.items}">
-        <p>Your cart is empty</p>
-        <div class="button-container">
-          <a
-            href="${pageContext.request.contextPath}/productListCart.jsp"
-            class="action-button continue-btn"
-          >
-            Continue Shopping
-          </a>
+        <div class="empty-cart">
+          <p>Your cart is empty</p>
+          <div class="button-container">
+            <a
+              href="${pageContext.request.contextPath}/carts"
+              class="action-button continue-btn"
+            >
+              Continue Shopping
+            </a>
+          </div>
         </div>
       </c:when>
       <c:otherwise>
@@ -111,6 +181,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     style="display: inline"
                   >
                     <input type="hidden" name="action" value="update" />
+                    <input type="hidden" name="source" value="cart" />
                     <input
                       type="hidden"
                       name="productId"
@@ -134,6 +205,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
                     style="display: inline"
                   >
                     <input type="hidden" name="action" value="remove" />
+                    <input type="hidden" name="source" value="cart" />
                     <input
                       type="hidden"
                       name="productId"
@@ -157,7 +229,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
         <div class="button-container">
           <a
-            href="${pageContext.request.contextPath}/productListCart.jsp"
+            href="${pageContext.request.contextPath}/carts"
             class="action-button continue-btn"
           >
             Continue Shopping

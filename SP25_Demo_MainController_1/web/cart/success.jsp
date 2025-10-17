@@ -51,10 +51,7 @@
       <div class="success-icon">✓</div>
       <div class="success-message">Đơn hàng của bạn đã được ghi nhận!</div>
       <div class="thank-you">Cảm ơn bạn đã mua sắm.</div>
-      <a
-        href="${pageContext.request.contextPath}/productListCart.jsp"
-        class="continue-link"
-      >
+      <a href="${pageContext.request.contextPath}/carts" class="continue-link">
         Tiếp tục mua hàng
       </a>
     </div>

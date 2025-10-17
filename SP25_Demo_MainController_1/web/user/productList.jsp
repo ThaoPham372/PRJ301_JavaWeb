@@ -1,10 +1,9 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Danh Sách Sản Phẩm</title>
+    <title>Product List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +16,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            padding: 15px;
+            padding: 20px;
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -27,21 +26,17 @@
             align-items: center;
             gap: 20px;
         }
-        .welcome-message {
-            font-size: 1.2em;
-            color: #333;
-        }
         .cart-link {
-            background-color: #007bff;
-            color: white;
-            padding: 8px 15px;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
             position: relative;
+            text-decoration: none;
+            color: #1976d2;
+            padding: 10px 20px;
+            border-radius: 4px;
+            background-color: #e3f2fd;
+            transition: background-color 0.3s;
         }
         .cart-link:hover {
-            background-color: #0056b3;
+            background-color: #bbdefb;
         }
         .cart-count {
             position: absolute;
@@ -53,23 +48,13 @@
             padding: 2px 6px;
             font-size: 12px;
         }
-        .logout-btn {
-            background-color: #dc3545;
-            color: white;
-            padding: 8px 15px;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .logout-btn:hover {
-            background-color: #c82333;
-        }
         .products-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
+            padding: 20px 0;
         }
-        .product {
+        .product-card {
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -77,93 +62,84 @@
             text-align: center;
             transition: transform 0.3s;
         }
-        .product:hover {
+        .product-card:hover {
             transform: translateY(-5px);
         }
-        .product h3 {
+        .product-name {
+            font-size: 1.1em;
             margin: 10px 0;
-            color: #333;
             height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .product p {
-            color: #28a745;
+        .product-price {
+            color: #1976d2;
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1.2em;
             margin: 15px 0;
         }
         .quantity-input {
             width: 60px;
-            padding: 5px;
+            padding: 8px;
             margin: 10px 0;
-            text-align: center;
             border: 1px solid #ddd;
             border-radius: 4px;
+            text-align: center;
         }
         .add-to-cart {
-            background-color: #28a745;
+            background-color: #1976d2;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
             width: 100%;
             transition: background-color 0.3s;
         }
         .add-to-cart:hover {
-            background-color: #218838;
+            background-color: #1565c0;
         }
-        .message {
-            padding: 10px;
-            margin-bottom: 20px;
+        .btn {
+            text-decoration: none;
+            padding: 8px 16px;
             border-radius: 4px;
-            text-align: center;
+            transition: background-color 0.3s;
         }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
         }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .btn-danger:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="user-info">
-            <span class="welcome-message">Welcome, ${sessionScope.user.username}!</span>
-            <a href="${pageContext.request.contextPath}/carts?view=1" class="cart-link">
-                View Cart
+            <h2>Welcome, ${sessionScope.user.username}!</h2>
+            <a href="${pageContext.request.contextPath}/carts" class="cart-link">
+                Cart
                 <c:if test="${not empty sessionScope.cart.items}">
                     <span class="cart-count">${sessionScope.cart.items.size()}</span>
                 </c:if>
             </a>
+            <a href="${pageContext.request.contextPath}/orders" class="btn">My Orders</a>
         </div>
-        <a href="${pageContext.request.contextPath}/logout" class="logout-btn">Logout</a>
+        <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger">Logout</a>
     </div>
 
-    <c:if test="${not empty message}">
-        <div class="message success">${message}</div>
-    </c:if>
-    <c:if test="${not empty error}">
-        <div class="message error">${error}</div>
-    </c:if>
-    
     <div class="products-container">
         <c:forEach var="product" items="${productList}">
-            <div class="product">
-                <h3>${product.name}</h3>
-                <p>Giá: ${product.price} VND</p>
+            <div class="product-card">
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-price">$${product.price}</p>
                 <form action="${pageContext.request.contextPath}/carts" method="post">
                     <input type="hidden" name="action" value="add">
                     <input type="hidden" name="productId" value="${product.id}">
                     <input type="number" name="quantity" value="1" min="1" class="quantity-input">
-                    <button type="submit" class="add-to-cart">Thêm vào Giỏ</button>
+                    <button type="submit" class="add-to-cart">Add to Cart</button>
                 </form>
             </div>
         </c:forEach>
